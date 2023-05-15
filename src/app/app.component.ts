@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { TestService } from './test.service';
+import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
   template: `
-  <p>{{dataVariable}}</p>
+  <p [@myAwesomeAnmation]='state' (click)="animateMe()">{{dataVariable}}</p>
   <h1>Hello there! {{title}}</h1>
   <ul>
     <li *ngFor="let val of myArr">{{val}}</li>
@@ -16,10 +17,34 @@ import { TestService } from './test.service';
   <button (click)="OnClick($event)">Click me</button>
   `,
   //templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  //styleUrls: ['./app.component.css'],
+  styles:[
+    `p{
+      width: 200px;
+      background: light;
+      margin: 100px auto;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.5em;
+    }`
+  ],
+  animations: [
+    trigger('myAwesomeAnmation',[
+      state('small', style({
+        transform: 'scale(1)',
+      })),
+      state('large', style({
+        transform: 'scale(1.2)',
+      })),
+
+      transition('small <=> large', animate('200ms ease-in', style({
+        transform: 'translateY(40px)'
+      }))),
+    ]),
+  ]
 })
 export class AppComponent {
-  
+  state:string = 'small';
   constructor(private testService : TestService) {
 
   }
@@ -30,6 +55,9 @@ export class AppComponent {
   OnClick(event:Event){
     console.log(event);
     
+  }
+  animateMe(){
+    this.state = (this.state == 'small' ? 'large' : 'small');
   }
   ngOnInit(){
     console.log(this.testService.data);
